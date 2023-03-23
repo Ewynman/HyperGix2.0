@@ -160,7 +160,7 @@ def sendRequest(url, data, apiKey = None):
 if __name__ == '__main__': 
     username = 'wynmane1'
     password = 'Edtv10052002!'  
-
+    
     print("\nRunning Scripts...\n")
     
     serviceUrl = "https://m2m.cr.usgs.gov/api/api/json/stable/"
@@ -288,36 +288,58 @@ if __name__ == '__main__':
     else:
         print("Logout Failed\n\n")
 
-time.sleep(100)
+while True:
+    response = input("Are you done downloading the needed files? (Y/N)")
+    if response.upper() == "Y":
+        # If the user enters Y (or y), move on to other code
+        print("Great, moving on to other code!")
+        break
+    elif response.upper() == "N":
+        # If the user enters N (or n), sleep for 30 seconds and ask again
+        print("Please download the needed files and try again in 30 seconds.")
+        time.sleep(30)
+    else:
+        # If the user enters anything else, ask again
+        print("Invalid response, please enter Y or N.")
 
-extract_folder = r'C:\Users\edwar\OneDrive\Research\MyCode\HyperGix2.0'
-images_folder = os.path.join(extract_folder, 'images')
-
-# Get all zip files in the download folder
+# Set the download folder and the destination folder
 download_folder = r'C:\Users\edwar\Downloads'
-zip_files = [os.path.join(download_folder, f) for f in os.listdir(download_folder) if f.endswith(('.zip', '.ZIP'))]
+extract_folder = r'C:\Users\edwar\OneDrive\Research\MyCode\HyperGix2.0\Extracted'
+images_folder = r'C:\Users\edwar\OneDrive\VS-Code\GitHub Stuff\HyperGix2.0\images'
 
-# Unzip each file with a progress bar
-for zip_path in tqdm(zip_files, desc='Extracting files'):
-    while True:
-        try:
-            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                zip_ref.extractall(extract_folder)
-            os.remove(zip_path)  # delete zip file after extraction
-            break  # break out of the while loop
-        except PermissionError:
-            # If the zip file is in use, wait for 1 second and try again
-            time.sleep(1)
+# Extract all files from download_folder to extract_folder with a progress bar
+for root, dirs, files in os.walk(download_folder):
+    for f in files:
+        # Check if file is a zip file
+        if f.endswith('.zip'):
+            # Construct paths for the source zip file and the destination folder
+            zip_path = os.path.join(root, f)
+            dest_folder = os.path.join(extract_folder, os.path.splitext(f)[0])
+            # Create the destination folder if it does not exist
+            if not os.path.exists(dest_folder):
+                os.makedirs(dest_folder)
+            # Extract the zip file to the destination folder with a progress bar
+            with tqdm(total=100, desc=f"Extracting {zip_path} ...") as pbar:
+                with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                    for member in zip_ref.infolist():
+                        zip_ref.extract(member, dest_folder)
+                        pbar.update(100 / len(zip_ref.infolist()))
 
-print("Done Extracting")
-# Move hdr and lan files to images folder
+# Move all .hdr and .lan files to images_folder
 for root, dirs, files in os.walk(extract_folder):
     for f in files:
+        # Check if file is a .hdr or .lan file
         if f.endswith(('.hdr', '.lan')):
+            # Construct paths for the source file and the destination file
             src_path = os.path.join(root, f)
             dst_path = os.path.join(images_folder, f)
+            # Move the file to the destination folder
             shutil.move(src_path, dst_path)
-print("Done Moving")
 
+# List the files in the images_folder
+if os.path.exists(images_folder):
+    print("The following files have been moved to the 'images' folder:")
+    for f in os.listdir(images_folder):
+        print(f)
 
 print("Done!")
