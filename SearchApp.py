@@ -341,5 +341,3 @@ if os.path.exists(images_folder):
     print("The following files have been moved to the 'images' folder:")
     for f in os.listdir(images_folder):
         print(f)
-
-print("Done!")
