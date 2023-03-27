@@ -3,6 +3,7 @@ import tkinter as tk
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
 import json
+import numpy as np
 import requests
 import sys
 import argparse
@@ -11,7 +12,7 @@ import shutil
 import zipfile
 import time
 from tqdm import tqdm
-import spectral
+import spectral as sp
 
 geolocator = Nominatim(user_agent='myapplication')
 
@@ -311,7 +312,7 @@ images_folder = r'C:\Users\edwar\OneDrive\VS-Code\GitHub Stuff\HyperGix2.0\image
 for root, dirs, files in os.walk(download_folder):
     for f in files:
         # Check if file is a zip file
-        if f.endswith('.zip'):
+        if f.endswith(('.zip', '.ZIP')):
             # Construct paths for the source zip file and the destination folder
             zip_path = os.path.join(root, f)
             dest_folder = os.path.join(extract_folder, os.path.splitext(f)[0])
@@ -341,3 +342,30 @@ if os.path.exists(images_folder):
     print("The following files have been moved to the 'images' folder:")
     for f in os.listdir(images_folder):
         print(f)
+
+# path to the images folder
+images_folder = r'C:\Users\edwar\OneDrive\VS-Code\GitHub Stuff\HyperGix2.0\images'
+
+# loop over all .hdr files in the images folder
+for file in os.listdir(images_folder):
+    if file.endswith('.hdr'):
+        print(f'File: {file}')
+        
+        # read the ENVI header file
+        hdr_file = os.path.join(images_folder, file)
+        hdr = sp.envi.read_envi_header(hdr_file)
+
+        # extract some metadata
+        num_bands = hdr['bands']
+        wavelengths = np.array([float(w) for w in hdr['wavelength']])
+        interleave = hdr['interleave']
+        rows, cols = hdr['lines'], hdr['samples']
+        datatype = hdr['data type']
+
+        # print the metadata
+        print(f'Number of bands: {num_bands}')
+        print(f'Wavelength range: {wavelengths[0]:.1f} - {wavelengths[-1]:.1f} nm')
+        print(f'Interleave: {interleave}')
+        print(f'Spatial dimensions: {rows} rows x {cols} columns')
+        print(f'Data type: {datatype}')
+        print()
