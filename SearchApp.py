@@ -118,9 +118,6 @@ error_label.pack(pady=10)
 # Run the GUI main loop
 window.mainloop()
 
-#Use this for analysis
-print(latitude, longitude)
-
 # send http request
 def sendRequest(url, data, apiKey = None):  
     json_data = json.dumps(data)

@@ -18,7 +18,7 @@
 
 ## 🧐 About <a name = "about"></a>
 
-This code is designed to search for and download satellite images using the United States Geological Survey (USGS) API. The user inputs an address, date range, and selects from a list of possible locations to search for images in the EO-1 Hyperion dataset. The images are then downloaded and extracted to a specified folder.
+This code is designed to search for and download satellite images using the United States Geological Survey (USGS) API. The user inputs an address, date range, and selects from a list of possible locations to search for images in the EO-1 Hyperion dataset. The images are then downloaded and extracted to a specified folder. From there some data is grabed and displayed about each image
 
 ## Installation 
 
