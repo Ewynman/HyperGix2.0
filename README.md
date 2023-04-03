@@ -53,24 +53,18 @@ pip install spectral
 
 ## 💭 How to Use <a name = "working"></a>
 
-1. Open the SearchApp.py file in a Python editor or IDE.<br>
+1. Open the App.py file in a Python editor or IDE.<br>
 2. Install the required libraries if they are not already installed.<br>
-3. Run the SearchApp.py file.<br>
-4. Enter an address, date range, and select a location from the list of possible locations.<br>
-5. The latitude and longitude of the selected location will be displayed and close the window<br>
-6. Satellite images in the EO-1 Hyperion dataset will be searched for within the specified date range and location.<br>
-7. Select download links from the list and press continue when downloads are complete.
-8. The images will be extracted to the specified folder.<br>
-9. The file names of the downloaded images will be displayed.<br>
-10. Spectral analysis will be done on the images (Coming Soon)
+3. Change the ```download_folder```, ```extract_folder```, and ```images_folder``` paths on lines 24-26. To get the extracted and images paths in VS code, right click the folder and press ```copy path```
+4. Run the App.py file.<br>
+5. Enter an address, date range, and select a location from the list of possible locations.<br>
+6. The latitude and longitude of the selected location will be displayed and close the window<br>
+7. Satellite images in the EO-1 Hyperion dataset will be searched for within the specified date range and location.<br>
+8. Select download links from the list and press continue when downloads are complete as of now you will have to manually copy and paste each link into your browser but this is being worked on.
+9. The images will be extracted to the specified folder.<br>
+10. The file names of the downloaded images will be displayed.<br>
+11. Spectral analysis will be done on the images (Coming Soon)
 
 ## ✍️ Authors <a name = "authors"></a>
 
 - [@Ewynman](https://github.com/Ewynman) 
-
-
-<!-- ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
-
-- Hat tip to anyone whose code was used
-- Inspiration
-- References -->

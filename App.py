@@ -15,7 +15,15 @@ import time
 from tqdm import tqdm
 import spectral as sp
 
+
+#Declare Geocoder API
 geolocator = Nominatim(user_agent='myapplication')
+
+#Decloare working folders
+# Set the download folder and the destination folder
+download_folder = r'C:\Users\edwar\Downloads'
+extract_folder = r'C:\Users\edwar\OneDrive\Research\MyCode\HyperGix2.0\Extracted'
+images_folder = r'C:\Users\edwar\OneDrive\VS-Code\GitHub Stuff\HyperGix2.0\images'
 
 '''===========================Address Search Window=========================='''
 addressWindow = tk.Tk()
@@ -58,7 +66,7 @@ def show_location():
     from_label.config(text=f'From date: {from_date}')
     to_label.config(text=f'To date: {to_date}')
 
-    #Use geocoder API to get the Lat and Lon off the enetred address
+    #Use geocoder API to get the Lat and Lon off the entered address
     try:
         location = geolocator.geocode(address, exactly_one=False)
 
@@ -92,8 +100,6 @@ def show_location():
                 lat_label.config(text=f'Latitude: {latitude}')
                 long_label.config(text=f'Longitude: {longitude}')
                 error_label.config(text='')
-
-                
 
                 # Close the location window
                 location_window.destroy()
@@ -182,7 +188,6 @@ def sendRequest(url, data, apiKey = None):
     response.close()
     
     return output['data']
-
 
 if __name__ == '__main__': 
     username = 'wynmane1'
@@ -299,8 +304,7 @@ if __name__ == '__main__':
                         for download in moreDownloadUrls['available']:                            
                             if download['downloadId'] not in downloadIds and (str(download['downloadId']) in requestResults['newRecords'] or str(download['downloadId']) in requestResults['duplicateProducts']):
                                 downloadIds.append(download['downloadId'])
-                                output_text.insert(tk.END, "DOWNLOAD: " + download['url'] + "\n")
-                            
+                                output_text.insert(tk.END, "DOWNLOAD: " + download['url'] + "\n")       
                 else:
                     # Get all available downloads
                     for download in requestResults['availableDownloads']:
@@ -317,29 +321,17 @@ if __name__ == '__main__':
         print("Logout Failed\n\n")
 
 # create a Label widget to display the question
-question_label = tk.Label(databaseWindow, text="Are you done downloading the needed files?")
+question_label = tk.Label(databaseWindow, text="When Done Downloading Click Continue")
+question_label.configure(bg="white")
 question_label.pack()
 
 # create two Button widgets for Yes and No options
-yes_button = tk.Button(databaseWindow, text="Yes", command=databaseWindow.quit)
-no_button = tk.Button(databaseWindow, text="No")
-
-# define a function to handle the No button click
-def handle_no():
-    # display a message and wait for 30 seconds
-    status_label.config(text="Please download the needed files and try again in 30 seconds.")
-    time.sleep(30)
-    # reset the status message
-    status_label.config(text="")
-
-# associate the handle_no function with the No button click
-no_button.config(command=handle_no)
+yes_button = tk.Button(databaseWindow, text="Continue", command=databaseWindow.quit)
 
 # pack the buttons horizontally using a frame
 button_frame = tk.Frame(databaseWindow)
-button_frame.pack(pady=10)
+button_frame.pack(padx= 20,pady=10)
 yes_button.pack(side=tk.LEFT, padx=10)
-no_button.pack(side=tk.LEFT, padx=10)
 
 # create a Label widget to display the status message
 status_label = tk.Label(databaseWindow, text="")
@@ -348,14 +340,7 @@ status_label.pack()
 # start the event loop
 databaseWindow.mainloop()
 
-# destroy the databaseWindow window
-databaseWindow.destroy()
-
-# Set the download folder and the destination folder
-download_folder = r'C:\Users\edwar\Downloads'
-extract_folder = r'C:\Users\edwar\OneDrive\Research\MyCode\HyperGix2.0\Extracted'
-images_folder = r'C:\Users\edwar\OneDrive\VS-Code\GitHub Stuff\HyperGix2.0\images'
-
+'''============================================MOVE IMAGES AND DATA FILES================================'''
 # Extract all files from download_folder to extract_folder with a progress bar
 for root, dirs, files in os.walk(download_folder):
     for f in files:
@@ -374,11 +359,11 @@ for root, dirs, files in os.walk(download_folder):
                         zip_ref.extract(member, dest_folder)
                         pbar.update(100 / len(zip_ref.infolist()))
 
-# Move all .hdr and .lan files to images_folder
-for root, dirs, files in os.walk(extract_folder):
+# Move all .hdr, .jpg, .jpeg, .JPG, and .JPEG files to images_folder
+for root, dirs, files in os.walk(download_folder):
     for f in files:
-        # Check if file is a .hdr or .lan file
-        if f.endswith(('.hdr', '.lan')):
+        # Check if file has a .hdr, .jpg, .jpeg, .JPG, or .JPEG extension
+        if f.lower().endswith(('.hdr', '.jpg', '.jpeg', '.JPG', '.JPEG')):
             # Construct paths for the source file and the destination file
             src_path = os.path.join(root, f)
             dst_path = os.path.join(images_folder, f)
@@ -393,39 +378,6 @@ if os.path.exists(images_folder):
 
 # path to the images folder
 images_folder = r'C:\Users\edwar\OneDrive\VS-Code\GitHub Stuff\HyperGix2.0\images'
-
-'''==================================================Image Analysis Window====================================='''
-# imageAnalysisWindow = tk.Tk()
-# imageAnalysisWindow.title("Image Analysis")
-# imageAnalysisWindow.configure(bg="white")
-# imageAnalysisWindow.geometry("200x200")
-
-# # loop over all .hdr files in the images folder
-# for file in os.listdir(images_folder):
-#     if file.endswith('.hdr'):
-#         print(f'File: {file}')
-        
-#         # read the ENVI header file
-#         hdr_file = os.path.join(images_folder, file)
-#         hdr = sp.envi.read_envi_header(hdr_file)
-
-#         # extract some metadata
-#         num_bands = hdr['bands']
-#         wavelengths = np.array([float(w) for w in hdr['wavelength']])
-#         interleave = hdr['interleave']
-#         rows, cols = hdr['lines'], hdr['samples']
-#         datatype = hdr['data type']
-
-#         # print the metadata
-#         print(f'Number of bands: {num_bands}')
-#         print(f'Wavelength range: {wavelengths[0]:.1f} - {wavelengths[-1]:.1f} nm')
-#         print(f'Interleave: {interleave}')
-#         print(f'Spatial dimensions: {rows} rows x {cols} columns')
-#         print(f'Data type: {datatype}')
-#         print()
-
-# # start the event loop
-# imageAnalysisWindow.mainloop()
 
 '''=====================================IMAGE ANALYSIS WINDOW=============================='''
 root = tk.Tk()
@@ -463,6 +415,8 @@ for file in os.listdir(images_folder):
                                             f'Interleave: {interleave}\n'
                                             f'Spatial dimensions: {rows} rows x {cols} columns\n'
                                             f'Data type: {datatype}\n\n')
+        metadata_label.configure(bg="white")
         metadata_label.pack()
+
 # start the event loop
 root.mainloop()
